@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -103,6 +103,11 @@ export default function Home() {
 
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleEditProfile = () => {
+    handleMenuClose();
+    navigate("/usuario/editar-perfil");
   };
 
   const handleLogout = async () => {
