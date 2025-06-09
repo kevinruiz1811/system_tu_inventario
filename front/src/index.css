@@ -1,0 +1,21 @@
+@font-face {
+  font-family: "Calibri";
+  src: url("./fonts/calibri-bold.ttf") format("ttf");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap; /* Mejora la visualización mientras carga */
+}
+.css-hhwack-MuiDrawer-docked {
+  width: 125px !important;
+}
+.MuiTypography-root {
+  font-family: "Calibri", sans-serif !important; /* Usa Colibri, si no carga, usa Lexend o sans-serif */
+}
+body {
+  font-family: "Calibri", sans-serif; /* Usa Colibri, si no carga, usa Lexend o sans-serif */
+  margin: 0;
+  padding: 0;
+}
+.swal2-container {
+  z-index: 2000 !important; /* Un z-index mayor que el del modal */
+}
