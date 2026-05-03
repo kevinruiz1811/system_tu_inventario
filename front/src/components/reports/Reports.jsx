@@ -63,25 +63,17 @@ const ReportsGestion = () => {
   // Guardar reports en localStorage cuando cambian
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(reports));
-    setFilteredReports(
-      reports.filter(
-        (item) =>
-          item.nombre.toLowerCase().includes(searchTerm) ||
-          item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm)
-      )
-    );
   }, [reports]);
 
-  // Filtrar reports al buscar
+  // Filtrar reports según búsqueda
   useEffect(() => {
     setFilteredReports(
       reports.filter(
         (item) =>
           item.nombre.toLowerCase().includes(searchTerm) ||
           item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm)
-      )
+          item.categoria.toLowerCase().includes(searchTerm),
+      ),
     );
     setPage(0);
   }, [searchTerm, reports]);

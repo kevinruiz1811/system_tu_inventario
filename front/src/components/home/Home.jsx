@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -20,6 +20,7 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import PeopleIcon from "@mui/icons-material/People";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import Logo from "../../assets/SurtiHogarAzul.png";
+import api from "../../api/client";
 
 const systemsData = {
   systems: [
@@ -119,7 +120,7 @@ export default function Home() {
     setLoading(true);
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}auth/logout`, { token });
+      await api.post("/auth/logout");
       localStorage.removeItem("access_token");
       localStorage.removeItem("rol");
       localStorage.removeItem("sidebar");

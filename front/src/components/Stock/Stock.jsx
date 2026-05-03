@@ -63,25 +63,17 @@ const StockGestion = () => {
   // Guardar stock en localStorage cuando cambian
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(stock));
-    setFilteredStock(
-      stock.filter(
-        (item) =>
-          item.nombre.toLowerCase().includes(searchTerm) ||
-          item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm)
-      )
-    );
   }, [stock]);
 
-  // Filtrar stock al buscar
+  // Filtrar stock según búsqueda
   useEffect(() => {
     setFilteredStock(
       stock.filter(
         (item) =>
           item.nombre.toLowerCase().includes(searchTerm) ||
           item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm)
-      )
+          item.categoria.toLowerCase().includes(searchTerm),
+      ),
     );
     setPage(0);
   }, [searchTerm, stock]);

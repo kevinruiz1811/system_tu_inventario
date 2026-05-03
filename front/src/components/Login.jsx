@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   CssBaseline,
@@ -12,12 +12,13 @@ import {
   CircularProgress,
   InputAdornment,
   IconButton,
-  Link,
 } from "@mui/material";
 import Swal from "sweetalert2";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import logo from "../assets/SurtiHogar.png";
+import axios from "axios";
+import { getApiBaseURL } from "../api/client";
 
 function Copyright(props) {
   return (
@@ -54,15 +55,26 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    if (username === "admin" && password === "admin") {
-      setLoading(false);
-      navigate("/home"); // Redirige al home si las credenciales son correctas
-    } else {
+    try {
+      const { data } = await axios.post(
+        `${getApiBaseURL()}/login`,
+        { username, password },
+        { headers: { Accept: "application/json" } },
+      );
+      localStorage.setItem("access_token", data.token);
+      navigate("/home");
+    } catch (err) {
+      const apiErrors = err.response?.data?.errors;
+      const msg =
+        apiErrors?.username?.[0] ||
+        err.response?.data?.message ||
+        "Clave o usuario incorrecto.";
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Clave o usuario incorrecto.",
+        text: msg,
       });
+    } finally {
       setLoading(false);
     }
   };

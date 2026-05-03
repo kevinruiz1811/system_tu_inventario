@@ -1,93 +1,41 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import MenuItem from "@mui/material/MenuItem";
 import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import Divider from "@mui/material/Divider";
+import Avatar from "@mui/material/Avatar";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import Menu from "@mui/material/Menu";
 import Logo from "../../assets/SurtiHogarAzul.png";
-import {
-  ExitToApp as ExitToAppIcon,
-  ExpandLess,
-  ExpandMore,
-  Menu as MenuIcon,
-} from "@mui/icons-material";
+import api from "../../api/client";
+import { Menu as MenuIcon } from "@mui/icons-material";
 
-const systemsData = {
-  systems: [
-    {
-      plataforma: "Admin",
-      name: "Gestión Administrativa",
-      bg: "#DEDEDE",
-      link: "/admin",
-    },
-    {
-      plataforma: "Psicosocial",
-      name: "Gestión Psicosocial",
-      bg: "#0000FF",
-      link: "/psicosocial",
-    },
-    {
-      plataforma: "Perfil de estrés",
-      name: "Gestión de Perfil de Estrés",
-      bg: "#FF8181",
-      link: "/perfil_estres",
-    },
-    {
-      plataforma: "Biométrico",
-      name: "Biométrico",
-      bg: "#007AFF",
-      link: "http://dev-new-back.haconsultingeu.com/api/microsoft-login/signin",
-    },
-  ],
-};
-
-export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
+export default function Navbar({ onSidebarToggle }) {
   const navigate = useNavigate();
-  const system = localStorage.getItem("system");
-  const [selectedSystem, setSelectedSystem] = useState(
-    system?.toUpperCase() || "ADMIN",
-  );
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [userData, setUserData] = useState(() => {
+  const [userData] = useState(() => {
     const saved = localStorage.getItem("userData");
     return saved ? JSON.parse(saved) : null;
   });
-  const [userLoading, setUserLoading] = useState(!userData);
   const open = Boolean(anchorEl);
 
-  const sidebar = JSON.parse(localStorage.getItem("sidebar")) || [];
-  const userRoleId = parseInt(localStorage.getItem("rol"));
-
   const getInitial = () => {
-    if (!userData?.user_first_name) return "";
+    if (!userData?.user_first_name) return "?";
     return userData.user_first_name.charAt(0).toUpperCase();
   };
 
   const getShortName = () => {
-    if (!userData) return "";
-
-    // Obtener el primer nombre
+    if (!userData?.user_first_name) return "Usuario";
     const firstName = userData.user_first_name.split(" ")[0];
-    // Obtener el primer apellido
-    const lastName = userData.user_last_name.split(" ")[0];
-
-    return `${firstName} ${lastName}`;
+    const lastName = userData.user_last_name?.split(" ")[0] ?? "";
+    return `${firstName} ${lastName}`.trim();
   };
-  const getShortNewName = () => {
-    if (!userData) return "";
 
-    // Obtener el primer nombre
-    const firstName = userData.user_first_name.split(" ")[0];
-    // Obtener el primer apellido
-    const lastName = userData.user_last_name.split(" ")[0];
-    const secontlastName = userData.user_last_name.split(" ")[1].split("")[0];
-
-    return `${firstName} ${lastName} ${secontlastName}.`;
-  };
   const handleMenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -111,7 +59,7 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
     setLoading(true);
 
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}auth/logout`, { token });
+      await api.post("/auth/logout");
       localStorage.removeItem("access_token");
       localStorage.removeItem("rol");
       localStorage.removeItem("sidebar");
@@ -126,57 +74,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
     }
   };
 
-  const getEnabledSystems = () => {
-    if (userRoleId === 1) {
-      return systemsData.systems;
-    }
-
-    const enabledSystemNames = new Set();
-    sidebar.forEach((group) => {
-      Object.keys(group).forEach((system) => {
-        if (group[system].length > 0) {
-          enabledSystemNames.add(system.toUpperCase());
-        }
-      });
-    });
-
-    const filteredSystems = systemsData.systems.filter((system) =>
-      enabledSystemNames.has(system.plataforma.toUpperCase()),
-    );
-
-    if (userRoleId === 2) {
-      const biometricSystem = systemsData.systems.find(
-        (system) => system.name.toUpperCase() === "BIOMÉTRICO",
-      );
-      if (biometricSystem) {
-        filteredSystems.push(biometricSystem);
-      }
-    }
-
-    return filteredSystems;
-  };
-
-  const enabledSystems = getEnabledSystems();
-
-  const handleChange = (event) => {
-    const selected = event.target.value.toUpperCase();
-    setSelectedSystem(selected);
-    localStorage.setItem("system", selected);
-
-    const systemData = enabledSystems.find(
-      (system) => system.name.toUpperCase() === selected,
-    );
-    if (systemData?.link) {
-      if (systemData.name.toUpperCase() === "BIOMÉTRICO") {
-        window.location.href = systemData.link;
-      } else if (systemData.link.startsWith("http")) {
-        window.open(systemData.link, "_blank");
-      } else {
-        navigate(systemData.link);
-      }
-    }
-  };
-
   return (
     <Box>
       <AppBar
@@ -186,7 +83,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between", display: "flex" }}>
-          {/* Left section - Menu and Avatar */}
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <IconButton
               size="large"
@@ -203,7 +99,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
             </IconButton>
           </Box>
 
-          {/* Center section - Logo */}
           <Box
             sx={{
               display: "flex",
@@ -227,10 +122,25 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
             >
               <HomeIcon />
             </IconButton>
+            <IconButton
+              aria-label="menú de cuenta"
+              onClick={handleMenuClick}
+              sx={{ color: "#fff" }}
+              size="small"
+            >
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  bgcolor: "#ff8206",
+                  fontSize: "0.95rem",
+                }}
+              >
+                {getInitial()}
+              </Avatar>
+            </IconButton>
           </Box>
-          {/* Texto "V1" agregado aquí */}
 
-          {/* User Menu */}
           <Menu
             anchorEl={anchorEl}
             open={open}
@@ -242,12 +152,6 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
                 overflow: "visible",
                 filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
                 mt: 1.5,
-                "& .MuiAvatar-root": {
-                  width: 32,
-                  height: 32,
-                  ml: -0.5,
-                  mr: 1,
-                },
                 "&:before": {
                   content: '""',
                   display: "block",
@@ -265,8 +169,16 @@ export default function Navbar({ onSidebarToggle, isSidebarOpen }) {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
+            <Box sx={{ px: 2, py: 1.5, minWidth: 200 }}>
+              <Typography variant="subtitle2" fontWeight={600}>
+                {getShortName()}
+              </Typography>
+            </Box>
+            <Divider />
             <MenuItem onClick={handleEditProfile}>Editar perfil</MenuItem>
-            <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+            <MenuItem onClick={handleLogout} disabled={loading}>
+              Cerrar sesión
+            </MenuItem>
           </Menu>
         </Toolbar>
       </AppBar>

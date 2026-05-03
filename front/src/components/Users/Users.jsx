@@ -63,25 +63,17 @@ const UsersGestion = () => {
   // Guardar users en localStorage cuando cambian
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users));
-    setFilteredUsers(
-      users.filter(
-        (item) =>
-          item.nombre.toLowerCase().includes(searchTerm) ||
-          item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm)
-      )
-    );
   }, [users]);
 
-  // Filtrar users al buscar
+  // Filtrar users según búsqueda
   useEffect(() => {
     setFilteredUsers(
       users.filter(
         (item) =>
           item.nombre.toLowerCase().includes(searchTerm) ||
           item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm)
-      )
+          item.categoria.toLowerCase().includes(searchTerm),
+      ),
     );
     setPage(0);
   }, [searchTerm, users]);
