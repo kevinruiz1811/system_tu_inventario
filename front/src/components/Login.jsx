@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -40,12 +40,11 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const navigate = useNavigate(); // Agrega este hook
+  const navigate = useNavigate();
 
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleLogin = useCallback(() => {
     if (!username || !password) {
       setError("Todos los campos son obligatorios.");
       return;
@@ -55,7 +54,7 @@ export default function Login() {
 
     if (username === "admin" && password === "admin") {
       localStorage.setItem("access_token", "demo-local");
-      navigate("/home");
+      navigate("/home", { replace: true });
     } else {
       Swal.fire({
         icon: "error",
@@ -63,8 +62,19 @@ export default function Login() {
         text: "Clave o usuario incorrecto.",
       });
     }
+
     setLoading(false);
-  };
+  }, [username, password, navigate]);
+
+  const handleKeyDownEnter = useCallback(
+    (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleLogin();
+      }
+    },
+    [handleLogin],
+  );
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -101,12 +111,8 @@ export default function Login() {
           <Typography component="h1" variant="h5">
             INICIAR SESIÓN
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
+          {/* Sin <form>: evita POST/GET reales al servidor (p. ej. 405 en Vercel). */}
+          <Box component="div" sx={{ mt: 1, width: "100%" }}>
             <TextField
               margin="normal"
               required
@@ -118,6 +124,7 @@ export default function Login() {
               autoFocus
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              onKeyDown={handleKeyDownEnter}
             />
             <TextField
               margin="normal"
@@ -130,10 +137,12 @@ export default function Login() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={handleKeyDownEnter}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
+                      type="button"
                       aria-label="toggle password visibility"
                       onClick={handleClickShowPassword}
                       edge="end"
@@ -147,11 +156,12 @@ export default function Login() {
             {error && <Typography color="error">{error}</Typography>}
 
             <Button
-              type="submit"
+              type="button"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
               disabled={loading}
+              onClick={handleLogin}
             >
               {loading ? <CircularProgress size={24} /> : "Ingresar"}
             </Button>
