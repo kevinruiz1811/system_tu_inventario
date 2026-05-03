@@ -17,8 +17,6 @@ import Swal from "sweetalert2";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import logo from "../assets/SurtiHogar.png";
-import axios from "axios";
-import { getApiBaseURL } from "../api/client";
 
 function Copyright(props) {
   return (
@@ -46,7 +44,7 @@ export default function Login() {
 
   const handleClickShowPassword = () => setShowPassword((prev) => !prev);
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     if (!username || !password) {
       setError("Todos los campos son obligatorios.");
@@ -55,28 +53,17 @@ export default function Login() {
     setError("");
     setLoading(true);
 
-    try {
-      const { data } = await axios.post(
-        `${getApiBaseURL()}/login`,
-        { username, password },
-        { headers: { Accept: "application/json" } },
-      );
-      localStorage.setItem("access_token", data.token);
+    if (username === "admin" && password === "admin") {
+      localStorage.setItem("access_token", "demo-local");
       navigate("/home");
-    } catch (err) {
-      const apiErrors = err.response?.data?.errors;
-      const msg =
-        apiErrors?.username?.[0] ||
-        err.response?.data?.message ||
-        "Clave o usuario incorrecto.";
+    } else {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: msg,
+        text: "Clave o usuario incorrecto.",
       });
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (

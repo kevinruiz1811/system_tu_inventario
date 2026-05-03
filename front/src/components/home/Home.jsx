@@ -20,7 +20,6 @@ import Inventory2Icon from "@mui/icons-material/Inventory2";
 import PeopleIcon from "@mui/icons-material/People";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import Logo from "../../assets/SurtiHogarAzul.png";
-import api from "../../api/client";
 
 const systemsData = {
   systems: [
@@ -99,7 +98,6 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
-  const token = localStorage.getItem("access_token");
   const open = Boolean(anchorEl);
 
   const handleMenuClose = () => {
@@ -111,28 +109,14 @@ export default function Home() {
     navigate("/usuario/editar-perfil");
   };
 
-  const handleLogout = async () => {
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
+  const handleLogout = () => {
     setLoading(true);
-
-    try {
-      await api.post("/auth/logout");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("rol");
-      localStorage.removeItem("sidebar");
-      navigate("/");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error during logout:", error);
-      navigate("/");
-      window.location.reload();
-    } finally {
-      setLoading(false);
-    }
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("sidebar");
+    navigate("/");
+    window.location.reload();
+    setLoading(false);
   };
 
   return (

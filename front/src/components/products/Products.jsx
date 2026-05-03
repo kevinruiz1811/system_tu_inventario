@@ -24,9 +24,9 @@ import EditIcon from "@mui/icons-material/Edit";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import BoxAdmin from "../BoxAdmin/BoxAdmin";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import api from "../../api/client";
+
+const LOCAL_STORAGE_KEY = "productos_data";
 
 const defaultProduct = {
   id: null,
@@ -38,7 +38,6 @@ const defaultProduct = {
 };
 
 const ProductsGestion = () => {
-  const navigate = useNavigate();
   const [productos, setProductos] = useState([]);
   const [filteredProductos, setFilteredProductos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,43 +50,19 @@ const ProductsGestion = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [formProduct, setFormProduct] = useState(defaultProduct);
 
-  const normalizeProduct = (p) => ({
-    ...p,
-    cantidad: String(p.cantidad ?? ""),
-    precio: String(p.precio ?? ""),
-  });
+  useEffect(() => {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (stored) {
+      const data = JSON.parse(stored);
+      setProductos(data);
+      setFilteredProductos(data);
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
-
-    async function fetchProductos() {
-      try {
-        const { data } = await api.get("/productos");
-        if (!cancelled) {
-          setProductos(data.map(normalizeProduct));
-        }
-      } catch (err) {
-        if (err.response?.status === 401) {
-          navigate("/");
-          return;
-        }
-        Swal.fire({
-          icon: "error",
-          title: "Error",
-          text: "No se pudieron cargar los productos.",
-        });
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    }
-
-    fetchProductos();
-    return () => {
-      cancelled = true;
-    };
-  }, [navigate]);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(productos));
+  }, [productos]);
 
   useEffect(() => {
     setFilteredProductos(
@@ -157,12 +132,11 @@ const ProductsGestion = () => {
     setSearchTerm(value);
   };
 
-  // CRUD
   const handleFormChange = (e) => {
     setFormProduct({ ...formProduct, [e.target.name]: e.target.value });
   };
 
-  const handleAddProduct = async () => {
+  const handleAddProduct = () => {
     if (
       !formProduct.nombre ||
       !formProduct.codigo ||
@@ -177,33 +151,15 @@ const ProductsGestion = () => {
       });
       return;
     }
-
-    const payload = {
-      nombre: formProduct.nombre,
-      codigo: formProduct.codigo,
-      categoria: formProduct.categoria,
-      cantidad: Number(formProduct.cantidad),
-      precio: Number(formProduct.precio),
+    const newProduct = {
+      ...formProduct,
+      id: Date.now(),
     };
-
-    try {
-      const { data } = await api.post("/productos", payload);
-      setProductos([normalizeProduct(data), ...productos]);
-      handleClose();
-    } catch (err) {
-      if (err.response?.status === 401) {
-        navigate("/");
-        return;
-      }
-      const apiErrors = err.response?.data?.errors;
-      const msg = apiErrors
-        ? Object.values(apiErrors).flat().join(" ")
-        : err.response?.data?.message || "No se pudo crear el producto.";
-      Swal.fire({ icon: "error", title: "Error", text: msg });
-    }
+    setProductos([newProduct, ...productos]);
+    handleClose();
   };
 
-  const handleEditProduct = async () => {
+  const handleEditProduct = () => {
     if (
       !formProduct.nombre ||
       !formProduct.codigo ||
@@ -218,34 +174,14 @@ const ProductsGestion = () => {
       });
       return;
     }
-
-    const payload = {
-      nombre: formProduct.nombre,
-      codigo: formProduct.codigo,
-      categoria: formProduct.categoria,
-      cantidad: Number(formProduct.cantidad),
-      precio: Number(formProduct.precio),
-    };
-
-    try {
-      const { data } = await api.put(`/productos/${selectedProductId}`, payload);
-      setProductos(
-        productos.map((p) =>
-          p.id === selectedProductId ? normalizeProduct(data) : p,
-        ),
-      );
-      handleCloseEditar();
-    } catch (err) {
-      if (err.response?.status === 401) {
-        navigate("/");
-        return;
-      }
-      const apiErrors = err.response?.data?.errors;
-      const msg = apiErrors
-        ? Object.values(apiErrors).flat().join(" ")
-        : err.response?.data?.message || "No se pudo actualizar el producto.";
-      Swal.fire({ icon: "error", title: "Error", text: msg });
-    }
+    setProductos(
+      productos.map((p) =>
+        p.id === selectedProductId
+          ? { ...formProduct, id: selectedProductId }
+          : p,
+      ),
+    );
+    handleCloseEditar();
   };
 
   return (
@@ -346,7 +282,6 @@ const ProductsGestion = () => {
         </IconButton>
       </Box>
 
-      {/* Modal Registrar Producto */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>Registrar Producto</DialogTitle>
         <DialogContent>
@@ -401,7 +336,6 @@ const ProductsGestion = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Modal Editar Producto */}
       <Dialog open={openEditar} onClose={handleCloseEditar} fullWidth maxWidth="sm">
         <DialogTitle>Editar Producto</DialogTitle>
         <DialogContent>
@@ -456,7 +390,6 @@ const ProductsGestion = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Modal Ver Producto */}
       <Dialog open={openVer} onClose={handleCloseVer} fullWidth maxWidth="sm">
         <DialogTitle>Detalle del Producto</DialogTitle>
         <DialogContent>

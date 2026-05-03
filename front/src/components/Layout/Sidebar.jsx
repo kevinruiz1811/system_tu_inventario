@@ -18,35 +18,19 @@ import {
   Menu as MenuIcon,
 } from "@mui/icons-material";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../api/client";
 
 const Sidebar = ({ isOpen, onToggle }) => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("access_token");
   const [loading, setLoading] = React.useState(false);
 
-  const handleLogout = async () => {
-    if (!token) {
-      navigate("/");
-      return;
-    }
-
+  const handleLogout = () => {
     setLoading(true);
-
-    try {
-      await api.post("/auth/logout");
-      localStorage.removeItem("access_token");
-      localStorage.removeItem("rol");
-      localStorage.removeItem("sidebar");
-      navigate("/");
-      window.location.reload();
-    } catch (error) {
-      console.error("Error during logout:", error);
-      navigate("/");
-      window.location.reload();
-    } finally {
-      setLoading(false);
-    }
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("rol");
+    localStorage.removeItem("sidebar");
+    navigate("/");
+    window.location.reload();
+    setLoading(false);
   };
 
   const sections = [
