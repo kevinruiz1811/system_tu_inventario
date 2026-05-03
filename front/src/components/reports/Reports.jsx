@@ -29,11 +29,11 @@ const LOCAL_STORAGE_KEY = "reports_data";
 
 const defaultReport = {
   id: null,
-  nombre: "",
-  codigo: "",
-  categoria: "",
-  cantidad: "",
-  precio: "",
+  fecha: "",
+  tipo_registro: "",
+  descripcion: "",
+  monto: "",
+  estado: "",
 };
 
 const ReportsGestion = () => {
@@ -49,7 +49,6 @@ const ReportsGestion = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [formReport, setFormReport] = useState(defaultReport);
 
-  // Cargar reports desde localStorage
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
@@ -60,19 +59,29 @@ const ReportsGestion = () => {
     setLoading(false);
   }, []);
 
-  // Guardar reports en localStorage cuando cambian
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(reports));
   }, [reports]);
 
-  // Filtrar reports según búsqueda
   useEffect(() => {
     setFilteredReports(
       reports.filter(
         (item) =>
-          item.nombre.toLowerCase().includes(searchTerm) ||
-          item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm),
+          String(item.fecha || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.tipo_registro || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.descripcion || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.monto || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.estado || "")
+            .toLowerCase()
+            .includes(searchTerm),
       ),
     );
     setPage(0);
@@ -107,7 +116,7 @@ const ReportsGestion = () => {
 
   const handleOpenEditar = (reportId) => {
     const item = reports.find((p) => p.id === reportId);
-    setFormReport(item || defaultReport);
+    setFormReport({ ...defaultReport, ...item });
     setSelectedReportId(reportId);
     setOpenEditar(true);
   };
@@ -120,7 +129,7 @@ const ReportsGestion = () => {
 
   const handleOpenVer = (reportId) => {
     const item = reports.find((p) => p.id === reportId);
-    setFormReport(item || defaultReport);
+    setFormReport({ ...defaultReport, ...item });
     setOpenVer(true);
   };
 
@@ -130,58 +139,62 @@ const ReportsGestion = () => {
   };
 
   const handleSearchChange = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearchTerm(value);
+    setSearchTerm(event.target.value.toLowerCase());
   };
 
-  // CRUD
   const handleFormChange = (e) => {
     setFormReport({ ...formReport, [e.target.name]: e.target.value });
   };
 
   const handleAddReport = () => {
     if (
-      !formReport.nombre ||
-      !formReport.codigo ||
-      !formReport.categoria ||
-      !formReport.cantidad ||
-      !formReport.precio
+      !formReport.fecha ||
+      !formReport.tipo_registro ||
+      !formReport.descripcion ||
+      formReport.monto === "" ||
+      !formReport.estado
     ) {
       return;
     }
-    const newReport = {
-      ...formReport,
-      id: Date.now(),
-    };
-    setReports([newReport, ...reports]);
+    setReports([{ ...formReport, id: Date.now() }, ...reports]);
     handleClose();
   };
 
   const handleEditReport = () => {
     setReports(
       reports.map((p) =>
-        p.id === selectedReportId ? { ...formReport, id: selectedReportId } : p
-      )
+        p.id === selectedReportId
+          ? { ...formReport, id: selectedReportId }
+          : p,
+      ),
     );
     handleCloseEditar();
   };
 
   return (
     <Box p={4}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Reportes y resúmenes para cuadre de caja y decisiones (objetivo del
+        documento: visibilidad frente al registro manual en cartera física).
+      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={4}
+        flexWrap="wrap"
+        gap={2}
       >
         <Button variant="contained" color="primary" onClick={handleOpen}>
-          Registrar Reporte
+          Registrar movimiento / nota
         </Button>
-        <Typography variant="h4">REPORTES</Typography>
+        <Typography variant="h4" component="h1">
+          Reportes
+        </Typography>
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Buscar reporte"
+          placeholder="Buscar…"
           value={searchTerm}
           onChange={handleSearchChange}
         />
@@ -190,11 +203,11 @@ const ReportsGestion = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Nombre</TableCell>
-              <TableCell>Código</TableCell>
-              <TableCell>Categoría</TableCell>
-              <TableCell>Cantidad</TableCell>
-              <TableCell>Precio</TableCell>
+              <TableCell>Fecha</TableCell>
+              <TableCell>Tipo</TableCell>
+              <TableCell>Descripción</TableCell>
+              <TableCell>Monto</TableCell>
+              <TableCell>Estado</TableCell>
               <TableCell align="right">Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -211,11 +224,11 @@ const ReportsGestion = () => {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((item) => (
                     <TableRow key={item.id}>
-                      <TableCell>{item.nombre}</TableCell>
-                      <TableCell>{item.codigo}</TableCell>
-                      <TableCell>{item.categoria}</TableCell>
-                      <TableCell>{item.cantidad}</TableCell>
-                      <TableCell>{item.precio}</TableCell>
+                      <TableCell>{item.fecha}</TableCell>
+                      <TableCell>{item.tipo_registro}</TableCell>
+                      <TableCell>{item.descripcion}</TableCell>
+                      <TableCell>{item.monto}</TableCell>
+                      <TableCell>{item.estado}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           color="primary"
@@ -264,50 +277,50 @@ const ReportsGestion = () => {
         </IconButton>
       </Box>
 
-      {/* Modal Registrar Reporte */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>Registrar Reporte</DialogTitle>
+        <DialogTitle>Registrar en reportes</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            label="Nombre"
-            name="nombre"
+            label="Fecha"
+            name="fecha"
+            type="date"
             fullWidth
-            value={formReport.nombre}
+            InputLabelProps={{ shrink: true }}
+            value={formReport.fecha}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Código"
-            name="codigo"
+            label="Tipo (venta, abono, inventario, otro)"
+            name="tipo_registro"
             fullWidth
-            value={formReport.codigo}
+            value={formReport.tipo_registro}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Categoría"
-            name="categoria"
+            label="Descripción"
+            name="descripcion"
             fullWidth
-            value={formReport.categoria}
+            value={formReport.descripcion}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Cantidad"
-            name="cantidad"
+            label="Monto"
+            name="monto"
             type="number"
             fullWidth
-            value={formReport.cantidad}
+            value={formReport.monto}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Precio"
-            name="precio"
-            type="number"
+            label="Estado (pendiente, pagado, verificado…)"
+            name="estado"
             fullWidth
-            value={formReport.precio}
+            value={formReport.estado}
             onChange={handleFormChange}
           />
         </DialogContent>
@@ -319,70 +332,84 @@ const ReportsGestion = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Modal Editar Reporte */}
-      <Dialog open={openEditar} onClose={handleCloseEditar} fullWidth maxWidth="sm">
-        <DialogTitle>Editar Reporte</DialogTitle>
+      <Dialog
+        open={openEditar}
+        onClose={handleCloseEditar}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Editar registro</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            label="Nombre"
-            name="nombre"
+            label="Fecha"
+            name="fecha"
+            type="date"
             fullWidth
-            value={formReport.nombre}
+            InputLabelProps={{ shrink: true }}
+            value={formReport.fecha}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Código"
-            name="codigo"
+            label="Tipo"
+            name="tipo_registro"
             fullWidth
-            value={formReport.codigo}
+            value={formReport.tipo_registro}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Categoría"
-            name="categoria"
+            label="Descripción"
+            name="descripcion"
             fullWidth
-            value={formReport.categoria}
+            value={formReport.descripcion}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Cantidad"
-            name="cantidad"
+            label="Monto"
+            name="monto"
             type="number"
             fullWidth
-            value={formReport.cantidad}
+            value={formReport.monto}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Precio"
-            name="precio"
-            type="number"
+            label="Estado"
+            name="estado"
             fullWidth
-            value={formReport.precio}
+            value={formReport.estado}
             onChange={handleFormChange}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditar}>Cancelar</Button>
           <Button onClick={handleEditReport} variant="contained" color="primary">
-            Guardar Cambios
+            Guardar cambios
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Modal Ver Reporte */}
       <Dialog open={openVer} onClose={handleCloseVer} fullWidth maxWidth="sm">
-        <DialogTitle>Detalle del Reporte</DialogTitle>
+        <DialogTitle>Detalle</DialogTitle>
         <DialogContent>
-          <Typography><b>Nombre:</b> {formReport.nombre}</Typography>
-          <Typography><b>Código:</b> {formReport.codigo}</Typography>
-          <Typography><b>Categoría:</b> {formReport.categoria}</Typography>
-          <Typography><b>Cantidad:</b> {formReport.cantidad}</Typography>
-          <Typography><b>Precio:</b> {formReport.precio}</Typography>
+          <Typography>
+            <b>Fecha:</b> {formReport.fecha}
+          </Typography>
+          <Typography>
+            <b>Tipo:</b> {formReport.tipo_registro}
+          </Typography>
+          <Typography>
+            <b>Descripción:</b> {formReport.descripcion}
+          </Typography>
+          <Typography>
+            <b>Monto:</b> {formReport.monto}
+          </Typography>
+          <Typography>
+            <b>Estado:</b> {formReport.estado}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseVer}>Cerrar</Button>

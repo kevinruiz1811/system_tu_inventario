@@ -35,26 +35,23 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
   const sections = [
     {
-      title: "Gestión de productos",
+      title: "Inventario",
       items: [
-        { text: "Productos", link: "/productos" },
+        { text: "Catálogo de productos", link: "/productos" },
+        { text: "Existencias", link: "/stock" },
       ],
     },
     {
-      title: "Control de Stock",
+      title: "Cartera y ventas",
       items: [
-        { text: "Stock", link: "/stock" },
+        { text: "Clientes", link: "/clientes" },
+        { text: "Ventas a crédito", link: "/ventas" },
       ],
     },
     {
-      title: "Gestión de reportes",
+      title: "Informes y administración",
       items: [
         { text: "Reportes", link: "/reportes" },
-      ],
-    },
-    {
-      title: "Gestión de usuarios",
-      items: [
         { text: "Usuarios", link: "/usuarios" },
       ],
     },

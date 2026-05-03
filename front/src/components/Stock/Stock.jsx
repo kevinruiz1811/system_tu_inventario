@@ -168,6 +168,9 @@ const StockGestion = () => {
 
   return (
     <Box p={4}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Control de existencias y trazabilidad del inventario (MVP TuInventario).
+      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -175,9 +178,11 @@ const StockGestion = () => {
         mb={4}
       >
         <Button variant="contained" color="primary" onClick={handleOpen}>
-          Registrar Stock
+          Registrar movimiento
         </Button>
-        <Typography variant="h4">STOCK</Typography>
+        <Typography variant="h4" component="h1">
+          Existencias
+        </Typography>
         <TextField
           variant="outlined"
           size="small"

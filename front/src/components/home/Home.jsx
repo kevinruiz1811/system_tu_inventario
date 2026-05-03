@@ -6,12 +6,6 @@ import Button from "@mui/material/Button";
 import CardSystem from "../CardSystem/CardSystem";
 import { useNavigate } from "react-router-dom";
 import CircularProgress from "@mui/material/CircularProgress";
-import MicrosoftIcon from "@mui/icons-material/Microsoft";
-import {
-  AdminPanelSettings as AdminPanelSettingsIcon,
-  Assessment as AssessmentIcon,
-  MonitorHeart as MonitorHeartIcon,
-} from "@mui/icons-material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -19,80 +13,55 @@ import { Typography } from "@mui/material";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import PeopleIcon from "@mui/icons-material/People";
 import ListAltIcon from "@mui/icons-material/ListAlt";
+import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 import Logo from "../../assets/SurtiHogarAzul.png";
 
-const systemsData = {
-  systems: [
-    {
-      plataforma: "Admin",
-      name: "Gestión Administrativa",
-      link: "/admin",
-      icon: <AdminPanelSettingsIcon fontSize="large" />,
-      description: "Gestión de usuarios y permisos",
-    },
-    {
-      plataforma: "Psicosocial",
-      name: "Gestión Psicosocial",
-      link: "/psicosocial",
-      icon: <AssessmentIcon fontSize="large" />,
-      description: "Gestión de mediciones y resultados",
-    },
-    {
-      plataforma: "Perfil de estrés",
-      name: "Gestión de Perfil de Estrés",
-      link: "/perfil_estres",
-      icon: <MonitorHeartIcon fontSize="large" />,
-      description: "Gestión de las pruebas de perfil de estrés de Novack",
-    },
-    {
-      plataforma: "Biométrico",
-      name: "Biométrico",
-      link: "http://dev-new-back.haconsultingeu.com/api/microsoft-login/signin",
-      icon: <MicrosoftIcon fontSize="large" />,
-      description: "Para registrar su horario debe iniciar sesión en Microsoft",
-    },
-  ].map((system, index) => {
-    const colors = ["#ff8206", "#0d6efd"];
-    const currentColor = colors[index % colors.length];
-    return {
-      ...system,
-      bg: currentColor,
-      icon: React.cloneElement(system.icon, {
-        sx: { color: currentColor },
-      }),
-    };
-  }),
-  additionalSystems: [
-    {
-      name: "Gestión de productos",
-      link: "/productos",
-      icon: <Inventory2Icon fontSize="large" sx={{ color: "#ff8206" }} />,
-      description: "Administra los productos del inventario",
-      bg: "#ff8206",
-    },
-    {
-      name: "Control de Stock",
-      link: "/stock",
-      icon: <ListAltIcon fontSize="large" sx={{ color: "#0d6efd" }} />,
-      description: "Controla y ajusta el stock de productos",
-      bg: "#0d6efd",
-    },
-    {
-      name: "Gestión de reportes",
-      link: "/reportes",
-      icon: <AssessmentIcon fontSize="large" sx={{ color: "#28a745" }} />,
-      description: "Genera y consulta reportes de inventario",
-      bg: "#28a745",
-    },
-    {
-      name: "Gestión de usuarios",
-      link: "/usuarios",
-      icon: <PeopleIcon fontSize="large" sx={{ color: "#6f42c1" }} />,
-      description: "Administra los usuarios del sistema",
-      bg: "#6f42c1",
-    },
-  ],
-};
+const moduleCards = [
+  {
+    name: "Inventario",
+    link: "/productos",
+    icon: <Inventory2Icon fontSize="large" sx={{ color: "#ff8206" }} />,
+    description: "Catálogo de mercancía y existencias para venta a crédito",
+    bg: "#ff8206",
+  },
+  {
+    name: "Existencias",
+    link: "/stock",
+    icon: <ListAltIcon fontSize="large" sx={{ color: "#0d6efd" }} />,
+    description: "Control de unidades disponibles (trazabilidad del inventario)",
+    bg: "#0d6efd",
+  },
+  {
+    name: "Clientes",
+    link: "/clientes",
+    icon: <PersonAddAlt1Icon fontSize="large" sx={{ color: "#198754" }} />,
+    description: "Registro de clientes y datos para asignación de crédito",
+    bg: "#198754",
+  },
+  {
+    name: "Ventas a crédito",
+    link: "/ventas",
+    icon: <PointOfSaleIcon fontSize="large" sx={{ color: "#dc3545" }} />,
+    description: "Registro de ventas, abonos y saldos de cartera",
+    bg: "#dc3545",
+  },
+  {
+    name: "Reportes",
+    link: "/reportes",
+    icon: <AssessmentIcon fontSize="large" sx={{ color: "#6f42c1" }} />,
+    description: "Resúmenes para cuadre y decisiones (MVP)",
+    bg: "#6f42c1",
+  },
+  {
+    name: "Usuarios",
+    link: "/usuarios",
+    icon: <PeopleIcon fontSize="large" sx={{ color: "#fd7e14" }} />,
+    description: "Administración de usuarios del sistema TuInventario",
+    bg: "#fd7e14",
+  },
+];
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
@@ -146,10 +115,8 @@ export default function Home() {
             minHeight: "80px",
           }}
         >
-          {/* Avatar del usuario */}
-          <Box pl={2}></Box>
+          <Box pl={2} />
 
-          {/* Menú desplegable del usuario */}
           <Menu
             anchorEl={anchorEl}
             open={open}
@@ -187,7 +154,7 @@ export default function Home() {
             <MenuItem onClick={handleEditProfile}>Editar perfil</MenuItem>
             <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
           </Menu>
-          {/* Logo centrado */}
+
           <Box
             sx={{
               display: "flex",
@@ -196,13 +163,11 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <Box>
-              <img
-                src={Logo}
-                alt="Logo"
-                style={{ height: 50, width: "auto" }}
-              />
-            </Box>
+            <img
+              src={Logo}
+              alt="SurtiHogar"
+              style={{ height: 50, width: "auto" }}
+            />
           </Box>
           <Button
             variant="contained"
@@ -219,11 +184,10 @@ export default function Home() {
             disabled={loading}
           >
             <LogoutIcon sx={{ mr: 1 }} />
-
             {loading ? (
               <CircularProgress size={24} color="inherit" />
             ) : (
-              "Cerrar Sesión"
+              "Cerrar sesión"
             )}
           </Button>
         </Toolbar>
@@ -241,25 +205,30 @@ export default function Home() {
         }}
       >
         <Box
-          mb={4}
+          mb={2}
           textAlign="center"
-          sx={{
-            width: "100%",
-            maxWidth: "1200px",
-          }}
+          sx={{ width: "100%", maxWidth: "1200px", px: 2 }}
         >
           <Typography
             variant="h4"
             component="h1"
             sx={{
-              mt: 4,
+              mt: 3,
               fontWeight: "bold",
               color: "#333",
-              marginBottom: 2,
-              fontSize: "1.8rem",
+              marginBottom: 1,
+              fontSize: { xs: "1.4rem", sm: "1.8rem" },
             }}
           >
-            PLATAFORMAS DE GESTIÓN TRANSACCIONAL - P.G.T{" "}
+            TuInventario
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            sx={{ color: "#555", maxWidth: 720, mx: "auto", mb: 1 }}
+          >
+            Control y gestión de inventario y ventas a crédito — caso SurtiHogar
+            (Sibaté). MVP académico: módulos de clientes, ventas, existencias e
+            usuarios.
           </Typography>
         </Box>
         <Box
@@ -268,21 +237,21 @@ export default function Home() {
             flexDirection: "row",
             flexWrap: "wrap",
             justifyContent: "center",
-            gap: 4,
+            gap: 3,
             width: "100%",
             maxWidth: "1200px",
             mb: 4,
             padding: 2,
           }}
         >
-          {systemsData.additionalSystems.map((system) => (
+          {moduleCards.map((m) => (
             <CardSystem
-              key={system.name}
-              name={system.name}
-              bg={system.bg}
-              link={system.link}
-              description={system.description}
-              icon={system.icon}
+              key={m.link}
+              name={m.name}
+              bg={m.bg}
+              link={m.link}
+              description={m.description}
+              icon={m.icon}
             />
           ))}
         </Box>
@@ -292,23 +261,22 @@ export default function Home() {
         component="footer"
         sx={{
           flexShrink: 0,
-          py: 3,
+          py: 2,
           px: 2,
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
               ? theme.palette.grey[200]
               : theme.palette.grey[800],
           textAlign: "center",
-          width: "auto",
-          justifyContent: "center",
         }}
       >
-        <Typography variant="body2" color="text.secondary" sx={{ flexGrow: 1 }}>
-          © {new Date().getFullYear()} SurtiHogar. Todos los derechos
-          reservados.
-        </Typography>
         <Typography variant="body2" color="text.secondary">
-          Versión 1.0
+          © {new Date().getFullYear()} TuInventario — SurtiHogar · Sibaté,
+          Colombia · Práctica de emprendimiento
+        </Typography>
+        <Typography variant="caption" display="block" color="text.secondary">
+          Corporación Universitaria Iberoamericana — Facultad de Ingeniería de
+          Software
         </Typography>
       </Box>
     </Box>

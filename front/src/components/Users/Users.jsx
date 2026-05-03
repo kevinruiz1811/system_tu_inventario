@@ -30,10 +30,10 @@ const LOCAL_STORAGE_KEY = "users_data";
 const defaultUser = {
   id: null,
   nombre: "",
-  codigo: "",
-  categoria: "",
-  cantidad: "",
-  precio: "",
+  usuario_login: "",
+  rol: "",
+  telefono: "",
+  correo: "",
 };
 
 const UsersGestion = () => {
@@ -49,7 +49,6 @@ const UsersGestion = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [formUser, setFormUser] = useState(defaultUser);
 
-  // Cargar users desde localStorage
   useEffect(() => {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (stored) {
@@ -60,19 +59,29 @@ const UsersGestion = () => {
     setLoading(false);
   }, []);
 
-  // Guardar users en localStorage cuando cambian
   useEffect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users));
   }, [users]);
 
-  // Filtrar users según búsqueda
   useEffect(() => {
     setFilteredUsers(
       users.filter(
         (item) =>
-          item.nombre.toLowerCase().includes(searchTerm) ||
-          item.codigo.toLowerCase().includes(searchTerm) ||
-          item.categoria.toLowerCase().includes(searchTerm),
+          String(item.nombre || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.usuario_login || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.rol || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.telefono || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(item.correo || "")
+            .toLowerCase()
+            .includes(searchTerm),
       ),
     );
     setPage(0);
@@ -107,7 +116,7 @@ const UsersGestion = () => {
 
   const handleOpenEditar = (userId) => {
     const item = users.find((p) => p.id === userId);
-    setFormUser(item || defaultUser);
+    setFormUser({ ...defaultUser, ...item });
     setSelectedUserId(userId);
     setOpenEditar(true);
   };
@@ -120,7 +129,7 @@ const UsersGestion = () => {
 
   const handleOpenVer = (userId) => {
     const item = users.find((p) => p.id === userId);
-    setFormUser(item || defaultUser);
+    setFormUser({ ...defaultUser, ...item });
     setOpenVer(true);
   };
 
@@ -130,11 +139,9 @@ const UsersGestion = () => {
   };
 
   const handleSearchChange = (event) => {
-    const value = event.target.value.toLowerCase();
-    setSearchTerm(value);
+    setSearchTerm(event.target.value.toLowerCase());
   };
 
-  // CRUD
   const handleFormChange = (e) => {
     setFormUser({ ...formUser, [e.target.name]: e.target.value });
   };
@@ -142,46 +149,50 @@ const UsersGestion = () => {
   const handleAddUser = () => {
     if (
       !formUser.nombre ||
-      !formUser.codigo ||
-      !formUser.categoria ||
-      !formUser.cantidad ||
-      !formUser.precio
+      !formUser.usuario_login ||
+      !formUser.rol ||
+      !formUser.telefono ||
+      !formUser.correo
     ) {
       return;
     }
-    const newUser = {
-      ...formUser,
-      id: Date.now(),
-    };
-    setUsers([newUser, ...users]);
+    setUsers([{ ...formUser, id: Date.now() }, ...users]);
     handleClose();
   };
 
   const handleEditUser = () => {
     setUsers(
       users.map((p) =>
-        p.id === selectedUserId ? { ...formUser, id: selectedUserId } : p
-      )
+        p.id === selectedUserId ? { ...formUser, id: selectedUserId } : p,
+      ),
     );
     handleCloseEditar();
   };
 
   return (
     <Box p={4}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Administración de usuarios del sistema TuInventario (MVP documentado en
+        la práctica — SurtiHogar).
+      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={4}
+        flexWrap="wrap"
+        gap={2}
       >
         <Button variant="contained" color="primary" onClick={handleOpen}>
-          Registrar Usuario
+          Registrar usuario
         </Button>
-        <Typography variant="h4">USUARIOS</Typography>
+        <Typography variant="h4" component="h1">
+          Usuarios del sistema
+        </Typography>
         <TextField
           variant="outlined"
           size="small"
-          placeholder="Buscar usuario"
+          placeholder="Buscar…"
           value={searchTerm}
           onChange={handleSearchChange}
         />
@@ -191,10 +202,10 @@ const UsersGestion = () => {
           <TableHead>
             <TableRow>
               <TableCell>Nombre</TableCell>
-              <TableCell>Código</TableCell>
-              <TableCell>Categoría</TableCell>
-              <TableCell>Cantidad</TableCell>
-              <TableCell>Precio</TableCell>
+              <TableCell>Usuario</TableCell>
+              <TableCell>Rol</TableCell>
+              <TableCell>Teléfono</TableCell>
+              <TableCell>Correo</TableCell>
               <TableCell align="right">Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -212,10 +223,10 @@ const UsersGestion = () => {
                   .map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>{item.nombre}</TableCell>
-                      <TableCell>{item.codigo}</TableCell>
-                      <TableCell>{item.categoria}</TableCell>
-                      <TableCell>{item.cantidad}</TableCell>
-                      <TableCell>{item.precio}</TableCell>
+                      <TableCell>{item.usuario_login}</TableCell>
+                      <TableCell>{item.rol}</TableCell>
+                      <TableCell>{item.telefono}</TableCell>
+                      <TableCell>{item.correo}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           color="primary"
@@ -264,13 +275,12 @@ const UsersGestion = () => {
         </IconButton>
       </Box>
 
-      {/* Modal Registrar Usuario */}
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>Registrar Usuario</DialogTitle>
+        <DialogTitle>Registrar usuario</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            label="Nombre"
+            label="Nombre completo"
             name="nombre"
             fullWidth
             value={formUser.nombre}
@@ -278,36 +288,35 @@ const UsersGestion = () => {
           />
           <TextField
             margin="dense"
-            label="Código"
-            name="codigo"
+            label="Usuario (login)"
+            name="usuario_login"
             fullWidth
-            value={formUser.codigo}
+            value={formUser.usuario_login}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Categoría"
-            name="categoria"
+            label="Rol en el sistema"
+            name="rol"
             fullWidth
-            value={formUser.categoria}
+            value={formUser.rol}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Cantidad"
-            name="cantidad"
-            type="number"
+            label="Teléfono"
+            name="telefono"
             fullWidth
-            value={formUser.cantidad}
+            value={formUser.telefono}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Precio"
-            name="precio"
-            type="number"
+            label="Correo"
+            name="correo"
+            type="email"
             fullWidth
-            value={formUser.precio}
+            value={formUser.correo}
             onChange={handleFormChange}
           />
         </DialogContent>
@@ -319,13 +328,17 @@ const UsersGestion = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Modal Editar Usuario */}
-      <Dialog open={openEditar} onClose={handleCloseEditar} fullWidth maxWidth="sm">
-        <DialogTitle>Editar Usuario</DialogTitle>
+      <Dialog
+        open={openEditar}
+        onClose={handleCloseEditar}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle>Editar usuario</DialogTitle>
         <DialogContent>
           <TextField
             margin="dense"
-            label="Nombre"
+            label="Nombre completo"
             name="nombre"
             fullWidth
             value={formUser.nombre}
@@ -333,56 +346,64 @@ const UsersGestion = () => {
           />
           <TextField
             margin="dense"
-            label="Código"
-            name="codigo"
+            label="Usuario (login)"
+            name="usuario_login"
             fullWidth
-            value={formUser.codigo}
+            value={formUser.usuario_login}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Categoría"
-            name="categoria"
+            label="Rol"
+            name="rol"
             fullWidth
-            value={formUser.categoria}
+            value={formUser.rol}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Cantidad"
-            name="cantidad"
-            type="number"
+            label="Teléfono"
+            name="telefono"
             fullWidth
-            value={formUser.cantidad}
+            value={formUser.telefono}
             onChange={handleFormChange}
           />
           <TextField
             margin="dense"
-            label="Precio"
-            name="precio"
-            type="number"
+            label="Correo"
+            name="correo"
+            type="email"
             fullWidth
-            value={formUser.precio}
+            value={formUser.correo}
             onChange={handleFormChange}
           />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditar}>Cancelar</Button>
           <Button onClick={handleEditUser} variant="contained" color="primary">
-            Guardar Cambios
+            Guardar cambios
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Modal Ver Usuario */}
       <Dialog open={openVer} onClose={handleCloseVer} fullWidth maxWidth="sm">
-        <DialogTitle>Detalle del Usuario</DialogTitle>
+        <DialogTitle>Detalle del usuario</DialogTitle>
         <DialogContent>
-          <Typography><b>Nombre:</b> {formUser.nombre}</Typography>
-          <Typography><b>Código:</b> {formUser.codigo}</Typography>
-          <Typography><b>Categoría:</b> {formUser.categoria}</Typography>
-          <Typography><b>Cantidad:</b> {formUser.cantidad}</Typography>
-          <Typography><b>Precio:</b> {formUser.precio}</Typography>
+          <Typography>
+            <b>Nombre:</b> {formUser.nombre}
+          </Typography>
+          <Typography>
+            <b>Usuario:</b> {formUser.usuario_login}
+          </Typography>
+          <Typography>
+            <b>Rol:</b> {formUser.rol}
+          </Typography>
+          <Typography>
+            <b>Teléfono:</b> {formUser.telefono}
+          </Typography>
+          <Typography>
+            <b>Correo:</b> {formUser.correo}
+          </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseVer}>Cerrar</Button>

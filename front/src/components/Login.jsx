@@ -26,8 +26,8 @@ function Copyright(props) {
       align="center"
       {...props}
     >
-      {"SURTI HOGAR "} {new Date().getFullYear()}
-      {" © Todos los derechos reservados."}
+      {"TuInventario · SurtiHogar — "} {new Date().getFullYear()}
+      {" · Práctica emprendimiento · Todos los derechos reservados."}
     </Typography>
   );
 }
@@ -108,8 +108,11 @@ export default function Login() {
               style={{ width: "150px", height: "150px" }}
             />
           </Box>
-          <Typography component="h1" variant="h5">
-            INICIAR SESIÓN
+          <Typography component="h1" variant="h5" sx={{ fontWeight: 600 }}>
+            TuInventario
+          </Typography>
+          <Typography variant="body2" color="text.secondary" align="center">
+            Inicio de sesión — SurtiHogar (ventas a crédito, Sibaté)
           </Typography>
           {/* Sin <form>: evita POST/GET reales al servidor (p. ej. 405 en Vercel). */}
           <Box component="div" sx={{ mt: 1, width: "100%" }}>

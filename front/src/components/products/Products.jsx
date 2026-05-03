@@ -186,6 +186,9 @@ const ProductsGestion = () => {
 
   return (
     <Box p={4}>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+        Catálogo de mercancía para el negocio SurtiHogar (inventario TuInventario).
+      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -193,9 +196,11 @@ const ProductsGestion = () => {
         mb={4}
       >
         <Button variant="contained" color="primary" onClick={handleOpen}>
-          Registrar Producto
+          Registrar producto
         </Button>
-        <Typography variant="h4">PRODUCTOS</Typography>
+        <Typography variant="h4" component="h1">
+          Inventario — productos
+        </Typography>
         <TextField
           variant="outlined"
           size="small"
