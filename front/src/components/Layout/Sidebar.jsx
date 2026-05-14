@@ -37,8 +37,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
     {
       title: "Inventario",
       items: [
-        { text: "Catálogo de productos", link: "/productos" },
-        { text: "Existencias", link: "/stock" },
+        { text: "Catálogo de productos", link: "/inventario?tab=0" },
+        { text: "Existencias", link: "/inventario?tab=1" },
       ],
     },
     {

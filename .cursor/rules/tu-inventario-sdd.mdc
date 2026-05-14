@@ -1,0 +1,16 @@
+---
+description: Spec Driven Development para TuInventario — leer el SDD antes de cambiar front/back alineado a las prácticas universitarias.
+globs: front/**/*,back/**/*
+alwaysApply: false
+---
+
+# TuInventario — regla SDD
+
+Antes de implementar o refinar **TuInventario** (React + eventual Laravel):
+
+1. **Leer y seguir** el documento: `docs/SDD-TuInventario.md`.
+2. Si el cambio altera **alcance, rutas, claves de `localStorage` o API**, **actualizar el mismo archivo** en el mismo PR/commit cuando sea razonable.
+3. Respetar la fase acordada: mientras el backend no esté desplegado/consumido, el front puede usar **solo `localStorage`**; el spec ya separa “implementado” vs “criterios con API”.
+4. Responder al usuario en **español** salvo que pida otro idioma.
+
+El SDD resume los PDF de Actividad 1 y 2 y la matriz de brechas (JWT/abonos/mobile-first, etc.).

@@ -1,8 +1,7 @@
 import Home from "./components/home/Home";
 import Login from "./components/Login";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Products from "./components/products/Products";
-import Stock from "./components/Stock/Stock";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Inventario from "./components/inventario/Inventario";
 import Reports from "./components/reports/Reports";
 import Users from "./components/Users/Users";
 import Clientes from "./components/clientes/Clientes";
@@ -14,8 +13,9 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/productos" element={<Products />} />
-        <Route path="/stock" element={<Stock />} />
+        <Route path="/inventario" element={<Inventario />} />
+        <Route path="/productos" element={<Navigate to="/inventario?tab=0" replace />} />
+        <Route path="/stock" element={<Navigate to="/inventario?tab=1" replace />} />
         <Route path="/clientes" element={<Clientes />} />
         <Route path="/ventas" element={<Ventas />} />
         <Route path="/reportes" element={<Reports />} />

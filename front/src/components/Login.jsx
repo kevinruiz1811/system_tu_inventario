@@ -26,8 +26,7 @@ function Copyright(props) {
       align="center"
       {...props}
     >
-      {"TuInventario · SurtiHogar — "} {new Date().getFullYear()}
-      {" · Práctica emprendimiento · Todos los derechos reservados."}
+      {"TuInventario · "} {new Date().getFullYear()}
     </Typography>
   );
 }
@@ -53,7 +52,7 @@ export default function Login() {
     setLoading(true);
 
     if (username === "admin" && password === "admin") {
-      localStorage.setItem("access_token", "demo-local");
+      localStorage.setItem("access_token", "session");
       navigate("/home", { replace: true });
     } else {
       Swal.fire({
@@ -112,7 +111,7 @@ export default function Login() {
             TuInventario
           </Typography>
           <Typography variant="body2" color="text.secondary" align="center">
-            Inicio de sesión — SurtiHogar (ventas a crédito, Sibaté)
+            Acceso al sistema
           </Typography>
           {/* Sin <form>: evita POST/GET reales al servidor (p. ej. 405 en Vercel). */}
           <Box component="div" sx={{ mt: 1, width: "100%" }}>

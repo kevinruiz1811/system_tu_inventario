@@ -37,7 +37,7 @@ const defaultProduct = {
   precio: "",
 };
 
-const ProductsGestion = () => {
+export const ProductsGestion = () => {
   const [productos, setProductos] = useState([]);
   const [filteredProductos, setFilteredProductos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -185,10 +185,7 @@ const ProductsGestion = () => {
   };
 
   return (
-    <Box p={4}>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Catálogo de mercancía para el negocio SurtiHogar (inventario TuInventario).
-      </Typography>
+    <Box p={{ xs: 2, sm: 4 }}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -199,7 +196,7 @@ const ProductsGestion = () => {
           Registrar producto
         </Button>
         <Typography variant="h4" component="h1">
-          Inventario — productos
+          Catálogo de productos
         </Typography>
         <TextField
           variant="outlined"

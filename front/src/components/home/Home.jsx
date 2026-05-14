@@ -12,7 +12,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { Typography } from "@mui/material";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import PeopleIcon from "@mui/icons-material/People";
-import ListAltIcon from "@mui/icons-material/ListAlt";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -21,17 +20,10 @@ import Logo from "../../assets/SurtiHogarAzul.png";
 const moduleCards = [
   {
     name: "Inventario",
-    link: "/productos",
+    link: "/inventario",
     icon: <Inventory2Icon fontSize="large" sx={{ color: "#ff8206" }} />,
-    description: "Catálogo de mercancía y existencias para venta a crédito",
+    description: "Catálogo y control de existencias",
     bg: "#ff8206",
-  },
-  {
-    name: "Existencias",
-    link: "/stock",
-    icon: <ListAltIcon fontSize="large" sx={{ color: "#0d6efd" }} />,
-    description: "Control de unidades disponibles (trazabilidad del inventario)",
-    bg: "#0d6efd",
   },
   {
     name: "Clientes",
@@ -51,14 +43,14 @@ const moduleCards = [
     name: "Reportes",
     link: "/reportes",
     icon: <AssessmentIcon fontSize="large" sx={{ color: "#6f42c1" }} />,
-    description: "Resúmenes para cuadre y decisiones (MVP)",
+    description: "Resúmenes y gráficas",
     bg: "#6f42c1",
   },
   {
     name: "Usuarios",
     link: "/usuarios",
     icon: <PeopleIcon fontSize="large" sx={{ color: "#fd7e14" }} />,
-    description: "Administración de usuarios del sistema TuInventario",
+    description: "Administración de usuarios",
     bg: "#fd7e14",
   },
 ];
@@ -226,9 +218,7 @@ export default function Home() {
             variant="subtitle1"
             sx={{ color: "#555", maxWidth: 720, mx: "auto", mb: 1 }}
           >
-            Control y gestión de inventario y ventas a crédito — caso SurtiHogar
-            (Sibaté). MVP académico: módulos de clientes, ventas, existencias e
-            usuarios.
+            Inventario y ventas a crédito.
           </Typography>
         </Box>
         <Box
@@ -271,12 +261,7 @@ export default function Home() {
         }}
       >
         <Typography variant="body2" color="text.secondary">
-          © {new Date().getFullYear()} TuInventario — SurtiHogar · Sibaté,
-          Colombia · Práctica de emprendimiento
-        </Typography>
-        <Typography variant="caption" display="block" color="text.secondary">
-          Corporación Universitaria Iberoamericana — Facultad de Ingeniería de
-          Software
+          © {new Date().getFullYear()} TuInventario
         </Typography>
       </Box>
     </Box>

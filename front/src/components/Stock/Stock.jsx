@@ -24,6 +24,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import LastPageIcon from "@mui/icons-material/LastPage";
 import BoxAdmin from "../BoxAdmin/BoxAdmin";
+import ExistenciasResumen from "../existencias/ExistenciasResumen";
 
 const LOCAL_STORAGE_KEY = "stock_data";
 
@@ -36,7 +37,7 @@ const defaultStock = {
   precio: "",
 };
 
-const StockGestion = () => {
+export const StockGestion = () => {
   const [stock, setStock] = useState([]);
   const [filteredStock, setFilteredStock] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -167,10 +168,8 @@ const StockGestion = () => {
   };
 
   return (
-    <Box p={4}>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Control de existencias y trazabilidad del inventario (MVP TuInventario).
-      </Typography>
+    <Box p={{ xs: 2, sm: 4 }}>
+      <ExistenciasResumen stockList={stock} />
       <Box
         display="flex"
         justifyContent="space-between"

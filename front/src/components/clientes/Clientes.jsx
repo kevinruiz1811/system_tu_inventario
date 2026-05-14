@@ -127,10 +127,6 @@ const ClientesGestion = () => {
 
   return (
     <Box p={4}>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Registro de clientes y datos para gestión de cartera (ventas a crédito)
-        — SurtiHogar.
-      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -238,7 +234,7 @@ const ClientesGestion = () => {
           <TextField margin="dense" label="Nombre completo" name="nombre" fullWidth value={form.nombre} onChange={handleFormChange} />
           <TextField margin="dense" label="Documento" name="documento" fullWidth value={form.documento} onChange={handleFormChange} />
           <TextField margin="dense" label="Teléfono" name="telefono" fullWidth value={form.telefono} onChange={handleFormChange} />
-          <TextField margin="dense" label="Dirección (Sibaté / zona)" name="direccion" fullWidth value={form.direccion} onChange={handleFormChange} />
+          <TextField margin="dense" label="Dirección" name="direccion" fullWidth value={form.direccion} onChange={handleFormChange} />
           <TextField margin="dense" label="Cupo de crédito autorizado" name="cupo_credito" type="number" fullWidth value={form.cupo_credito} onChange={handleFormChange} />
         </DialogContent>
         <DialogActions>

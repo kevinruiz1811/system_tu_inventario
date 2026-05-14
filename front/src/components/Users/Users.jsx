@@ -171,10 +171,6 @@ const UsersGestion = () => {
 
   return (
     <Box p={4}>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-        Administración de usuarios del sistema TuInventario (MVP documentado en
-        la práctica — SurtiHogar).
-      </Typography>
       <Box
         display="flex"
         justifyContent="space-between"
